@@ -9,7 +9,7 @@ Bash: transac
    login into FA SSO, retrieve your AUTH_TOKEN (password read from STDIN)
 
  fa_transac.sh csv2json CAMPAIGN_IDENTIFIER.csv
-   convert a CSV read from STDIN and CAMPAIGN_IDENTIFIER OR a csv named as campaign_identifier, to a ready to push json file
+   convert csv named as campaign_identifier, to a ready to push json file
    The CSV first line MUST be "user", then the variables keynames
 
  fa_transac.sh push AUTH_TOKEN -
@@ -17,6 +17,15 @@ Bash: transac
 
  Note: commands needed in PATH: which, sed, curl
 ```
+
+Logic
+-----
+
+0) If not done yet, fetch your `AUTH_TOKEN` https://dev.followanalytics.com/platform-apis/api-overview/#authentication
+1) Prepare your JSON file accordinig to https://dev.followanalytics.com/platform-apis/campaigns/#body-parameters_2 (see command `csv2json` to help you)
+2) Trigger the pushes batch https://dev.followanalytics.com/platform-apis/campaigns/#send-a-batch-of-transactional-messages
+
+Facultative: fetch the status for the batch: https://dev.followanalytics.com/platform-apis/campaigns/#retrieve-a-sending-report
 
 Best practices
 ----------------

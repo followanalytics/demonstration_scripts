@@ -8,7 +8,7 @@
 ##   login into FA SSO, retrieve your AUTH_TOKEN (password read from STDIN)
 ##
 ## fa_transac.sh csv2json CAMPAIGN_IDENTIFIER.csv
-##   convert a CSV read from STDIN and CAMPAIGN_IDENTIFIER OR a csv named as campaign_identifier, to a ready to push json file
+##   convert csv named as campaign_identifier, to a ready to push json file
 ##   The CSV first line MUST be "user", then the variables keynames 
 ##
 ## fa_transac.sh push AUTH_TOKEN -
