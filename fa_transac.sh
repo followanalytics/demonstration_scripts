@@ -88,7 +88,7 @@ function csv2json {
               vars+=( "\"${headers[proutIndex + 1]}\":\"${line_items[proutIndex+1]}\"" )
             fi
           done
-          fullVars="$(join_by , ${vars[@]})"
+          fullVars="$(join_by , "${vars[@]}")"
           printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "${line_items[0]}" "$(join_by , "${fullVars[@]}")"
           messages+=( "$msg" )
           line_items=( )
@@ -98,7 +98,7 @@ function csv2json {
       fi
     done
 
-    printf '{"campaignKey":[\"%s\"],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "$(join_by , ${messages[@]})"
+    printf '{"campaignKey":[\"%s\"],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "$(join_by , "${messages[@]}")"
   else
     echo "params"
   fi
