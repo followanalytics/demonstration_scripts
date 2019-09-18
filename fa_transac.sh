@@ -49,7 +49,8 @@ function build_curl {
   else
     AUTH_HEADER=" -H 'Authorization: Token $AUTH_TOKEN'"
   fi
-  echo "$CURL -s -H 'Accept: application/json' -H 'Content-Type: application/json; charset=utf-8'$AUTH_HEADER -d '$JSON' $CURL_URL $COMPLEMENT"
+  # -w "\n" is here to force curl to output the json response, which doesn't have linefeed for now
+  echo "$CURL -s -w \"\n\" -H 'Accept: application/json' -H 'Content-Type: application/json; charset=utf-8'$AUTH_HEADER -d '$JSON' $CURL_URL $COMPLEMENT"
 }
 
 function csv2json {
