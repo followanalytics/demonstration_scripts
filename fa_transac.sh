@@ -7,13 +7,12 @@
 ## fa_transac.sh login USER -
 ##   login into FA SSO, retrieve your FA_TOKEN (password read from STDIN)
 ##
-## fa_transac.sh csv2json CAMPAIGN_IDENTIFIER -
 ## fa_transac.sh csv2json CAMPAIGN_IDENTIFIER.csv
 ##   convert a CSV read from STDIN and CAMPAIGN_IDENTIFIER OR a csv named as campaign_identifier, to a ready to push json file
-##   The CSV firsg line MUST be the varialbe key
+##   The CSV first line MUST be "user", then the variables keynames 
 ##
-## fa_transac.sh push TEMPLATE.JSON -
-##   push transac messages defined in TEMPLATE.JSON to userId read from STDIN
+## fa_transac.sh push AUTH_TOKEN -
+##   push transac messages defined in json on STDIN using AUTH_TOKEN as identification
 ##
 ## Note: commands needed in PATH: which, sed, curl
 
@@ -27,6 +26,7 @@ SED=`which sed`
 
 FA_API='https://api.follow-apps.com'
 FA_LOGIN="$FA_API/api/login"
+FA_PUSH="$FA_API/api/transac"
 
 CAPTURE_TOKEN='s/^.*auth_token":"\([-_a-zA-Z0-9]*\).*$/\1/p'
 
@@ -41,8 +41,10 @@ function login_json {
   echo "$LOGIN_JSON"
 }
 function build_curl {
-  JSON="`login_json`"
-  echo "$CURL -s -H 'Accept: application/json' -H 'Content-Type: application/json' -d '$JSON' $FA_LOGIN | $SED -n '$CAPTURE_TOKEN'"
+  JSON="$1"
+  CURL_URL="$2"
+  COMPLEMENT="$3"
+  echo "$CURL -s -H 'Accept: application/json' -H 'Content-Type: application/json' -d '$JSON' $CURL_URL $COMPLEMENT"
 }
 
 function csv2json {
@@ -106,19 +108,33 @@ function login {
   echo
   echo "Password for $FA_USER:"
   read -s FA_PWD
+  
+  ALTERATION="| $SED -n '$CAPTURE_TOKEN'"
+  
+  JSON="`login_json`"
+  CMD="`build_curl "$JSON" "$FA_LOGIN" "$ALTERATION"`"
+  echo
+  echo "Executing:"
+  echo "$CMD"
   echo
   echo "Your token:"
-  
-  CMD="`build_curl`"
   eval $CMD
 
   exit 0
+}
+
+function push {
+  AUTH_TOKEN="`echo $ARG2`"
+  CMD="``"
+  eval $CMD
 }
 
 if [ $COMMAND = "login" ]; then
   login
 elif [ $COMMAND = 'csv2json' ]; then
   csv2json
+elif [ $COMMAND = 'push' ]; then
+  push
 else
   banner
 fi
