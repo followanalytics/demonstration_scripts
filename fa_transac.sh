@@ -71,9 +71,6 @@ function csv2json {
           items+=( "$v" )
         done 
       fi
-      #  printf -v item '{"user":"%s","templateVars":{"%s": "%s"}}' "$lat" "$long" "$pos"
-      #  items+=( "$item" )
-      echo "------------"
     done <$CSVFILE
     IFS="$OLD_IFS"
 
@@ -91,7 +88,7 @@ function csv2json {
           done
           fullVars="$(join_by , ${vars[@]})"
           echo "=================="
-          printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "gni" "$fullVars"
+          printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "${line_items[0]}" "$(join_by , ${fullVars[@]})"
           messages+=( "$msg" )
           line_items=( )
         fi
@@ -100,13 +97,8 @@ function csv2json {
       fi
     done
 
-    printf '{"campaignKey": [%s],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "${messages[*]}"
-    echo "=========================="
-    echo "Here's the header"
-    for h in "${headers[@]}"
-    do
-      echo "$h"
-    done
+    printf '{"campaignKey":[\"%s\"],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "${messages[*]}"
+    printf '{"campaignKey":[\"%s\"],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "$(join_by , ${messages[@]})"
   else
     echo "params"
   fi
