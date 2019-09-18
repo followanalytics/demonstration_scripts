@@ -81,9 +81,6 @@ function csv2json {
     messages=( )
     line_items=( )
     for itemIndex in "${!items[@]}"; do
-    # for headerIndex in "${!headers[@]}"; do 
-    #   printf "%s\t%s\n" "$index" "${headers[$index]}"
-    # done
       if ! ((itemIndex % $headers_count)) ; then
         if [ ${#line_items[@]} -gt 0 ]; then
           vars=( )
