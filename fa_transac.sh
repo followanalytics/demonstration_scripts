@@ -58,10 +58,8 @@ function csv2json {
     OLD_IFS="$IFS"
     while IFS=',' read -r -a array; do
       if [ ${#headers[@]} -eq 0 ]; then
-        echo "empty headers"
         for v in "${array[@]}"
         do
-          echo "h:$v"
           headers+=( "$v" )
         done
       else
@@ -78,26 +76,28 @@ function csv2json {
     messages=( )
     line_items=( )
     for itemIndex in "${!items[@]}"; do
-      if ! ((itemIndex % $headers_count)) ; then
+      innerIndex=$((itemIndex % headers_count))
+      if ! (( ((itemIndex + 1)) % $headers_count)) ; then
         if [ ${#line_items[@]} -gt 0 ]; then
           vars=( )
-          echo "=================="
+          line_items+=( "${items[itemIndex]}" )
+          varCount=${#line_items[@]}
           for proutIndex in "${!line_items[@]}"; do
-            echo "\"${headers[$proutIndex]}\":\"${line_items[$proutIndex]}\""
-            vars+=( "\"${headers[$proutIndex]}\":\"${line_items[$proutIndex]}\"" )
+            if (( proutIndex < (varCount - 1) )); then
+              echo "\"${headers[proutIndex + 1]}\":\"${line_items[proutIndex+1]}\""
+              vars+=( "\"${headers[proutIndex + 1]}\":\"${line_items[proutIndex+1]}\"" )
+            fi
           done
           fullVars="$(join_by , ${vars[@]})"
-          echo "=================="
-          printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "${line_items[0]}" "$(join_by , ${fullVars[@]})"
+          printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "${line_items[0]}" "$(join_by , "${fullVars[@]}")"
           messages+=( "$msg" )
           line_items=( )
         fi
       else
-        line_items+=( "${items[$itemIndex]}" )
+        line_items+=( "${items[itemIndex]}" )
       fi
     done
 
-    printf '{"campaignKey":[\"%s\"],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "${messages[*]}"
     printf '{"campaignKey":[\"%s\"],"messages":[%s]}\n' "$CAMPAIGN_IDENTIFIER" "$(join_by , ${messages[@]})"
   else
     echo "params"
