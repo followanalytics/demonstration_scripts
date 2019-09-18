@@ -50,8 +50,6 @@ function csv2json {
   if [ -f $CAMPAIGN_IDENTIFIER ]; then
     CSVFILE=$CAMPAIGN_IDENTIFIER
     CAMPAIGN_IDENTIFIER=`echo $CAMPAIGN_IDENTIFIER | $SED -e 's/\.csv$//'`
-    echo "CSVFILE: $CSVFILE"
-    echo "CAMPAIGN_IDENTIFIER: $CAMPAIGN_IDENTIFIER"
 
     headers=( )
     items=( )
@@ -65,7 +63,6 @@ function csv2json {
       else
         for v in "${array[@]}"
         do
-          echo "e:$v"
           items+=( "$v" )
         done 
       fi
@@ -84,7 +81,6 @@ function csv2json {
           varCount=${#line_items[@]}
           for proutIndex in "${!line_items[@]}"; do
             if (( proutIndex < (varCount - 1) )); then
-              echo "\"${headers[proutIndex + 1]}\":\"${line_items[proutIndex+1]}\""
               vars+=( "\"${headers[proutIndex + 1]}\":\"${line_items[proutIndex+1]}\"" )
             fi
           done
