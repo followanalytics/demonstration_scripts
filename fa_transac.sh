@@ -44,7 +44,12 @@ function build_curl {
   JSON="$1"
   CURL_URL="$2"
   COMPLEMENT="$3"
-  echo "$CURL -s -H 'Accept: application/json' -H 'Content-Type: application/json' -d '$JSON' $CURL_URL $COMPLEMENT"
+  if [ -z $AUTH_TOKEN ]; then
+    AUTH_HEADER=""
+  else
+    AUTH_HEADER=" -H 'Authorization: Token $AUTH_TOKEN'"
+  fi
+  echo "$CURL -s -H 'Accept: application/json' -H 'Content-Type: application/json; charset=utf-8'$AUTH_HEADER -d '$JSON' $CURL_URL $COMPLEMENT"
 }
 
 function csv2json {
@@ -125,8 +130,15 @@ function login {
 
 function push {
   AUTH_TOKEN="`echo $ARG2`"
-  CMD="``"
+  JSON=`cat /dev/stdin`
+  CMD="`build_curl "$JSON" "$FA_PUSH"`"
+  echo
+  echo "Executing:"
+  echo "$CMD"
+  echo
   eval $CMD
+
+  exit 0
 }
 
 if [ $COMMAND = "login" ]; then
