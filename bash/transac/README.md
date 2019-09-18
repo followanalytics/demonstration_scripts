@@ -5,8 +5,8 @@ Bash: transac
  Followanalytics transactional pushes
  ------------------------------------
 
- fa_transac.sh login USER -
-   login into FA SSO, retrieve your AUTH_TOKEN (password read from STDIN)
+ fa_transac.sh login USER_IDENTIFIER
+   login USER_IDENTIFIER into FA SSO, retrieve your AUTH_TOKEN (password read from STDIN)
 
  fa_transac.sh csv2json CAMPAIGN_IDENTIFIER.csv
    convert csv named as campaign_identifier, to a ready to push json file
