@@ -79,25 +79,25 @@ function csv2json {
     headers_count="${#headers[@]}"
     messages=( )
     line_items=( )
-    for itemIndex in "${!items[@]}"; do
-      innerIndex=$((itemIndex % headers_count))
-      if ! (( ((itemIndex + 1)) % $headers_count)) ; then
+    for item_index in "${!items[@]}"; do
+      inner_index=$((item_index % headers_count))
+      if ! (( ((item_index + 1)) % $headers_count)) ; then
         if [ ${#line_items[@]} -gt 0 ]; then
           vars=( )
-          line_items+=( "${items[itemIndex]}" )
-          varCount=${#line_items[@]}
-          for proutIndex in "${!line_items[@]}"; do
-            if (( proutIndex < (varCount - 1) )); then
-              vars+=( "\"${headers[proutIndex + 1]}\":\"${line_items[proutIndex+1]}\"" )
+          line_items+=( "${items[item_index]}" )
+          var_count=${#line_items[@]}
+          for inner_index in "${!line_items[@]}"; do
+            if (( inner_index < (var_count - 1) )); then
+              vars+=( "\"${headers[inner_index + 1]}\":\"${line_items[inner_index+1]}\"" )
             fi
           done
-          fullVars="$(join_by , "${vars[@]}")"
-          printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "${line_items[0]}" "$(join_by , "${fullVars[@]}")"
+          full_vars="$(join_by , "${vars[@]}")"
+          printf -v msg "{\"user\":\"%s\",\"templateVars\":{%s}}" "${line_items[0]}" "$(join_by , "${full_vars[@]}")"
           messages+=( "$msg" )
           line_items=( )
         fi
       else
-        line_items+=( "${items[itemIndex]}" )
+        line_items+=( "${items[item_index]}" )
       fi
     done
 
